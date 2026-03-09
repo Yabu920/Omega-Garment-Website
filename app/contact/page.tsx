@@ -44,21 +44,36 @@ export default function ContactPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Construct mailto link
+  const buildEmailPayload = () => {
     const subject = encodeURIComponent(`Inquiry from ${formData.name}: ${formData.subject}`);
     const body = encodeURIComponent(
       `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
     );
-    
-    setTimeout(() => {
-      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-      setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 1000);
+
+    return { subject, body };
+  };
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const { subject, body } = buildEmailPayload();
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    setIsSubmitting(false);
+    setIsSuccess(true);
+  };
+
+  const handleGmailSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const { subject, body } = buildEmailPayload();
+    window.open(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}&body=${body}`,
+      '_blank'
+    );
+    setIsSubmitting(false);
+    setIsSuccess(true);
   };
 
   // const handleWhatsAppSubmit = (e: React.FormEvent) => {
@@ -225,11 +240,11 @@ export default function ContactPage() {
 
                 <SectionHeading
                   title="Send Us a Message"
-                  subtitle="Fill out the form below and choose your preferred way to send."
+                  subtitle="Fill out the form below and choose your preferred email method."
                   className="mb-10"
                 />
 
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleEmailSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="name" className="text-sm font-bold text-accent uppercase tracking-widest">Full Name</label>
@@ -308,22 +323,23 @@ export default function ContactPage() {
 
                   <div className="pt-4 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
                     <Button
-                      onClick={handleEmailSubmit}
+                      type="submit"
                       disabled={isSubmitting}
                       className="w-full sm:w-auto group"
                     >
                       <Send className="mr-2 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" size={20} />
-                      Send via Email
+                      Send via Email App
                     </Button>
-                    {/* <Button
-                      onClick={handleWhatsAppSubmit}
+                    <Button
+                      type="button"
+                      onClick={handleGmailSubmit}
                       disabled={isSubmitting}
                       variant="outline"
-                      className="w-full sm:w-auto border-green-500 text-green-600 hover:bg-green-50 group"
+                      className="w-full sm:w-auto group"
                     >
                       <MessageCircle className="mr-2 group-hover:scale-110 transition-transform" size={20} />
-                      Send via WhatsApp
-                    </Button> */}
+                      Send via Gmail
+                    </Button>
                   </div>
                 </form>
               </motion.div>
