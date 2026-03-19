@@ -1,12 +1,11 @@
 'use client';
 
 import { 
-  BRAND_NAME, 
   CONTACT_ADDRESS, 
   CONTACT_EMAIL, 
+  CONTACT_MAP_URL,
   CONTACT_PHONE, 
   SOCIAL_LINKS, 
-  WHATSAPP_NUMBER, 
   WORKING_HOURS 
 } from '@/lib/constants';
 import { motion, AnimatePresence } from 'motion/react';
@@ -18,8 +17,7 @@ import {
   Clock, 
   Send, 
   MessageCircle, 
-  CheckCircle2, 
-  ArrowRight 
+  CheckCircle2 
 } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -28,6 +26,9 @@ import { Badge } from '@/components/ui/Badge';
 import { useState } from 'react';
 
 export default function ContactPage() {
+  const contactMapEmbedUrl =
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2441.4571719349565!2d38.48330471829172!3d7.05564744999005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x17b14ff5417d2d6f%3A0x55738773937e25fb!2sOmega%20Garment%20Hawassa!5e1!3m2!1sen!2set!4v1773889373735!5m2!1sen!2set';
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -171,8 +172,15 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-accent text-lg mb-1 uppercase tracking-wider">Address</h4>
-                      <p className="text-gray-600 font-medium">{CONTACT_ADDRESS}</p>
-                      <p className="text-gray-400 text-sm">Addiss Kebele, Ethiopia</p>
+                      <a
+                        href={CONTACT_MAP_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-medium text-gray-600 transition-colors hover:text-primary"
+                      >
+                        {CONTACT_ADDRESS}
+                      </a>
+                      <p className="text-gray-400 text-sm">Tap the address to open directions.</p>
                     </div>
                   </div>
 
@@ -213,7 +221,7 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="bg-gray-50 p-8 md:p-12 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden"
+                className="relative overflow-hidden rounded-4xl border border-gray-100 bg-gray-50 p-8 shadow-sm md:p-12"
               >
                 {/* Success Message Overlay */}
                 <AnimatePresence>
@@ -349,30 +357,26 @@ export default function ContactPage() {
       </section>
 
       {/* Map Section */}
-      <section className="h-[500px] relative bg-gray-200 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-center p-10">
-          <div className="max-w-md">
-            <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <MapPin className="text-primary" size={32} />
-            </div>
-            <h3 className="text-2xl font-bold text-accent mb-4">Visit Our Showroom</h3>
-            <p className="text-gray-600 mb-8">
-              We are located in the heart of Addis Ababa. Come visit us to see our fabric samples and discuss your designs in person.
+      <section className="bg-gray-100 py-16 md:py-20">
+        <Container>
+          <div className="mb-8 text-center">
+            <h3 className="text-3xl font-bold text-accent md:text-4xl">Our Location</h3>
+            <p className="mx-auto mt-4 max-w-2xl text-gray-600">
+              Find OMEGA Sportswear directly on the map below.
             </p>
-            <div className="p-10 border-4 border-dashed border-gray-300 rounded-3xl bg-gray-100/50 backdrop-blur-sm">
-              <p className="text-gray-400 font-bold uppercase tracking-widest">Interactive Map Placeholder</p>
-              <p className="text-xs text-gray-400 mt-2">Google Map will be embedded here</p>
-            </div>
           </div>
-        </div>
-        {/* Placeholder Map Image */}
-        <Image
-          src="https://picsum.photos/seed/map/1920/1000?grayscale"
-          alt="Map Placeholder"
-          fill
-          className="object-cover opacity-30 -z-10"
-          referrerPolicy="no-referrer"
-        />
+
+          <div className="overflow-hidden rounded-4xl border border-gray-200 bg-white shadow-xl ring-1 ring-black/5">
+            <iframe
+              title="OMEGA Sportswear location map"
+              src={contactMapEmbedUrl}
+              className="h-[420px] w-full md:h-[520px]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+        </Container>
       </section>
 
       {/* Final CTA */}
