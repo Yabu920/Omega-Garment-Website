@@ -79,7 +79,7 @@ export function Header() {
               >
                 OMEGA
               </span>
-              <span className="mt-1 block text-[15px] font-bold uppercase tracking-[0.34em] text-primary md:text-xs">
+              <span className="mt-1 block text-[10px] font-bold uppercase tracking-[0.34em] text-primary md:text-xs">
                 የአሸናፊዎች ምርጫ
               </span>
             </span>
