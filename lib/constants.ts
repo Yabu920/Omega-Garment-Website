@@ -18,7 +18,7 @@ import {
 
 export const BRAND_NAME = "OMEGA Garment Enterprise";
 export const TAGLINE = "WINNERS CHOICE!";
-export const CONTACT_EMAIL = "info@omegasportswear.com";
+export const CONTACT_EMAIL = "fitsumhibizuneh966@gmail.com";
 export const CONTACT_PHONE = "0911347574 /0960606099";
 export const CONTACT_ADDRESS = "Hawassa, Ethiopia";
 export const CONTACT_MAP_URL = "https://maps.app.goo.gl/khLfBveuouNXyM4S6";

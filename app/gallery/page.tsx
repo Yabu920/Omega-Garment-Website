@@ -29,6 +29,10 @@ const galleryItems = [
   '/gallery/pic-19.jpg',
   '/gallery/pic-20.jpg',
   '/gallery/pic-21.jpg',
+  '/gallery/pic-22.jpg',
+  '/gallery/pic-23.jpg',
+  '/gallery/pic-24.jpg',
+  '/gallery/pic-25.jpg',
 ];
 
 export default function GalleryPage() {

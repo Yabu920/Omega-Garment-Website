@@ -112,6 +112,74 @@ export default function HomePage() {
         </Container>
       </section>
 
+      {/* Video Showcase */}
+      <section className="section-padding bg-accent text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(0,130,200,0.22),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(255,255,255,0.08),_transparent_28%)]" />
+
+        <Container className="relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto mb-12 max-w-3xl text-center"
+          >
+            <Badge className="mb-5 bg-white/10 text-white border-white/15 uppercase tracking-[0.26em]">
+              In Motion
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+              See OMEGA In Action
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-white/70">
+              A quick look at our craftsmanship, garments, and production quality
+              through real video highlights.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {[
+              {
+                src: '/videos/home-1.mp4',
+                title: 'Production Highlight',
+              },
+              {
+                src: '/videos/home-2.mp4',
+                title: 'Sportswear Showcase',
+              },
+            ].map((video, index) => (
+              <motion.div
+                key={video.src}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="overflow-hidden rounded-4xl border border-white/10 bg-white/5 shadow-2xl shadow-black/20"
+              >
+                <div className="relative aspect-[16/10] bg-black">
+                  <video
+                    className="h-full w-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    controls
+                    preload="metadata"
+                  >
+                    <source src={video.src} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                <div className="border-t border-white/10 px-5 py-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/80">
+                    {video.title}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
       {/* Product Category Preview */}
       <section className="section-padding bg-gray-50">
         <Container>

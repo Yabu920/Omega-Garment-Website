@@ -8,16 +8,14 @@ import {
   SOCIAL_LINKS, 
   WORKING_HOURS 
 } from '@/lib/constants';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import { 
   Mail, 
   Phone, 
   MapPin, 
   Clock, 
-  Send, 
-  MessageCircle, 
-  CheckCircle2 
+  Send
 } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -38,60 +36,59 @@ export default function ContactPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const buildEmailPayload = () => {
-    const subject = encodeURIComponent(`Inquiry from ${formData.name}: ${formData.subject}`);
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
-    );
-
-    return { subject, body };
-  };
-
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const { subject, body } = buildEmailPayload();
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      const response = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+          _subject: `Inquiry from ${formData.name}: ${formData.subject}`,
+          _replyto: formData.email,
+          _captcha: 'false',
+          _template: 'table',
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.success === false || result.success === 'false') {
+        throw new Error('Unable to send message');
+      }
+
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+      });
+
+      window.alert('Message sent successfully.');
+    } catch {
+      window.alert(
+        'We could not send your message right now. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-  const handleGmailSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const { subject, body } = buildEmailPayload();
-    window.open(
-      `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}&body=${body}`,
-      '_blank'
-    );
-    setIsSubmitting(false);
-    setIsSuccess(true);
-  };
-
-  // const handleWhatsAppSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setIsSubmitting(true);
-    
-  //   // Construct WhatsApp message
-  //   const text = encodeURIComponent(
-  //     `*New Inquiry from OMEGA Website*\n\n*Name:* ${formData.name}\n*Email:* ${formData.email}\n*Phone:* ${formData.phone}\n*Subject:* ${formData.subject}\n\n*Message:*\n${formData.message}`
-  //   );
-    
-  //   setTimeout(() => {
-  //     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
-  //     setIsSubmitting(false);
-  //     setIsSuccess(true);
-  //   }, 1000);
-  // };
 
   return (
     <div className="pt-20">
@@ -223,36 +220,13 @@ export default function ContactPage() {
                 transition={{ duration: 0.6 }}
                 className="relative overflow-hidden rounded-4xl border border-gray-100 bg-gray-50 p-8 shadow-sm md:p-12"
               >
-                {/* Success Message Overlay */}
-                <AnimatePresence>
-                  {isSuccess && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 z-20 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center p-10 text-center"
-                    >
-                      <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-                        <CheckCircle2 size={48} className="text-primary" />
-                      </div>
-                      <h3 className="text-3xl font-bold text-accent mb-4">Message Sent!</h3>
-                      <p className="text-gray-600 max-w-sm mb-8">
-                        Thank you for reaching out to OMEGA. We have received your inquiry and will get back to you shortly.
-                      </p>
-                      <Button onClick={() => setIsSuccess(false)} variant="outline">
-                        Send Another Message
-                      </Button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
                 <SectionHeading
                   title="Send Us a Message"
-                  subtitle="Fill out the form below and choose your preferred email method."
+                  subtitle="Fill out the form below and send your message directly to our team."
                   className="mb-10"
                 />
 
-                <form className="space-y-6" onSubmit={handleEmailSubmit}>
+                <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="name" className="text-sm font-bold text-accent uppercase tracking-widest">Full Name</label>
@@ -329,24 +303,14 @@ export default function ContactPage() {
                     />
                   </div>
 
-                  <div className="pt-4 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                  <div className="pt-4">
                     <Button
                       type="submit"
                       disabled={isSubmitting}
                       className="w-full sm:w-auto group"
                     >
                       <Send className="mr-2 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" size={20} />
-                      Send via Email App
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleGmailSubmit}
-                      disabled={isSubmitting}
-                      variant="outline"
-                      className="w-full sm:w-auto group"
-                    >
-                      <MessageCircle className="mr-2 group-hover:scale-110 transition-transform" size={20} />
-                      Send via Gmail
+                      {isSubmitting ? 'Sending...' : 'Send'}
                     </Button>
                   </div>
                 </form>
