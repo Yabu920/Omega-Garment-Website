@@ -2,23 +2,25 @@
 
 import {
   BRAND_NAME,
-  PRODUCT_CATEGORIES,
   TAGLINE,
   TESTIMONIALS,
   TRUST_BADGES,
 } from '@/lib/constants';
 import { motion } from 'motion/react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   ArrowRight,
   CheckCircle2,
-  ChevronRight,
 } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Badge } from '@/components/ui/Badge';
+
+const featuredProductImages = Array.from({ length: 4 }, (_, index) => ({
+  id: index + 1,
+  src: `/Products/product-${index + 1}.jpg`,
+}));
 
 export default function HomePage() {
   return (
@@ -195,50 +197,32 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Product Category Preview */}
+      {/* Product Preview */}
       <section className="bg-gray-50 section-padding">
         <Container>
           <SectionHeading
-            title="Our Product Categories"
-            subtitle="Explore our wide range of premium sportswear and garment solutions tailored for every need."
+            title="Featured Products"
+            subtitle="A quick look at some of our recent sportswear pieces. Explore the full collection on the Products page."
             centered
           />
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {PRODUCT_CATEGORIES.map((category, index) => (
+          <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+            {featuredProductImages.map((product, index) => (
               <motion.div
-                key={category.id}
+                key={product.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
-                className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-500 hover:shadow-xl"
+                className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-all duration-500 hover:shadow-xl"
               >
-                <div className="relative aspect-[4/5] overflow-hidden">
+                <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
                   <Image
-                    src={`/categories/${category.id}.jpg`}
-                    alt={category.name}
+                    src={product.src}
+                    alt={`Featured product ${product.id}`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-accent/90 via-accent/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80" />
-
-                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <div className="mb-4 flex h-12 w-12 translate-y-4 items-center justify-center rounded-lg bg-primary opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                      <category.icon size={24} />
-                    </div>
-                    <h3 className="mb-2 text-2xl font-bold">{category.name}</h3>
-                    <p className="mb-4 line-clamp-2 translate-y-4 text-sm text-gray-300 opacity-0 transition-all duration-500 delay-75 group-hover:translate-y-0 group-hover:opacity-100">
-                      {category.shortDescription}
-                    </p>
-                    <Link
-                      href="/products"
-                      className="inline-flex items-center text-sm font-bold uppercase tracking-widest text-primary transition-colors duration-300 hover:text-white"
-                    >
-                      Learn More <ChevronRight size={16} className="ml-1" />
-                    </Link>
-                  </div>
                 </div>
               </motion.div>
             ))}
@@ -246,7 +230,7 @@ export default function HomePage() {
 
           <div className="mt-16 text-center">
             <Button href="/products" variant="outline" size="lg">
-              View All Products & Services
+              View All Products
             </Button>
           </div>
         </Container>
